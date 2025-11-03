@@ -1,0 +1,201 @@
+   body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ececec;
+    font-family: sans-serif;
+  }
+  
+  /* canvas frame */
+  .canvas-frame {
+    width: 550px;
+    height: 350px;
+    border: 16px solid #d7c09d;
+    border-radius: 10px;
+    background: #fdf8ee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow:
+      0 6px 24px rgba(0,0,0,0.25),
+      inset 0 0 12px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+  }
+  
+  .canvas-frame:hover {
+    transform: scale(1.02);
+  }
+  
+  /* night painting scene */
+  .scene {
+    position: relative;
+    width: 90%;
+    height: 80%;
+    overflow: hidden;
+    border-radius: 8px;
+    background: linear-gradient(#0a0e27, #1e2959);
+  }
+  
+  /* moon */
+  .moon {
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    width: 80px;
+    height: 80px;
+    background: #f6f3c1;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 12px #f6f3c1);
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0% 100%);
+    z-index: 1;
+  }
+  
+  /* stars */
+  .stars {
+    position: absolute;
+    top: 30px;
+    left: 50px;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.85;
+    animation: twinkle 2.6s infinite ease-in-out alternate;
+    box-shadow:
+      60px 15px white,
+      140px -18px white,
+      220px 25px white,
+      280px 5px white,
+      350px -12px white,
+      420px 18px white;
+  }
+  
+  @keyframes twinkle {
+    0% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+  
+  /* ground */
+  .ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(#1c2a38, #101a23);
+  }
+  
+  /* house */
+  .house {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 110px;
+    background: #303760;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  }
+  
+  /* roof */
+  .roof {
+    position: absolute;
+    top: -50px;
+    width: 160px;
+    height: 50px;
+    background: #222845;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  }
+  
+  /* window glow */
+  .window {
+    position: absolute;
+    top: 20px;
+    left: 45px;
+    width: 70px;
+    height: 45px;
+    border-radius: 6px;
+    background: radial-gradient(circle, #ffe492, #ffb84a);
+    box-shadow: 0 0 18px #ffcb69;
+    animation: flicker 3s infinite alternate ease-in-out;
+  }
+  
+  @keyframes flicker {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+  
+  /* door */
+  .door {
+    position: absolute;
+    bottom: 0;
+    left: 70px;
+    width: 30px;
+    height: 40px;
+    background: #473c52;
+    border-radius: 4px;
+  }
+
+  /* chimney */
+  .chimney {
+    position: absolute;
+    top: -45px;
+    right: 30px;
+    width: 20px;
+    height: 35px;
+    background: #303760;
+  }
+
+  /* smoke */
+  .smoke {
+    position: absolute;
+    top: -50px;
+    right: 35px;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: smoke 4s infinite ease-out;
+  }
+
+  .smoke::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 2px;
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: smoke 4s infinite ease-out 0.5s;
+  }
+
+  .smoke::after {
+    content: '';
+    position: absolute;
+    top: -16px;
+    left: -2px;
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: smoke 4s infinite ease-out 1s;
+  }
+
+  @keyframes smoke {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateY(-15px) translateX(5px);
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(-30px) translateX(10px);
+      opacity: 0;
+    }
+  }
+  
