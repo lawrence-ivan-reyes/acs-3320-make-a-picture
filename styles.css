@@ -48,7 +48,6 @@
     background: #f6f3c1;
     border-radius: 50%;
     filter: drop-shadow(0 0 12px #f6f3c1);
-    clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0% 100%);
     z-index: 1;
   }
   
