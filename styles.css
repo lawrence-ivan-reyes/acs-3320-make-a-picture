@@ -1,4 +1,213 @@
-   body {
+/*
+main custom properties:
+- sky colours
+- moon colour, size, position, and glow
+- star colours and animation timing
+- ground colours and height
+- house dimensions, colours, and position
+- window glow colours and intensity
+- roof and chimney colours
+- smoke animation properties
+- frame styling (border, background)
+
+themes:
+1. default theme - midnight blue (original night scene)
+2. sunset theme - warm orange/purple twilight scene
+3. winter theme - cold blue/white snowy night
+
+challenges encountered:
+- organising many variables in a logical hierarchy
+- using calc() for relative positioning based on house size
+- creating theme variants that maintain visual consistency
+- balancing specificity for theme overrides!!!
+- fixed: theme classes needed to be on body, not canvas-frame, for proper inheritance
+*/
+
+/* root variables (default theme) */
+:root {
+    /* transition speeds */
+    --transition-fast: 0.3s ease;
+    --transition-normal: 0.5s ease;
+  
+    /* sky & atmosphere */
+    --sky-color-top: #0a0e27;
+    --sky-color-bottom: #1e2959;
+  
+    /* moon */
+    --moon-color: #f6f3c1;
+    --moon-size: 80px;
+    --moon-glow: #f6f3c1;
+    --moon-top: 40px;
+    --moon-right: 60px;
+  
+    /* stars */
+    --star-color: white;
+    --star-size: 4px;
+    --star-opacity-min: 0.4;
+    --star-opacity-max: 1;
+    --star-twinkle-duration: 2.6s;
+  
+    /* ground */
+    --ground-height: 100px;
+    --ground-color-top: #1c2a38;
+    --ground-color-bottom: #101a23;
+  
+    /* snow effect */
+    --snow-display: none;
+  
+    /* house structure */
+    --house-width: 160px;
+    --house-height: 110px;
+    --house-color: #303760;
+    --house-bottom: 80px;
+    --house-border-radius: 6px;
+  
+    /* roof */
+    --roof-height: 50px;
+    --roof-color: #222845;
+  
+    /* chimney */
+    --chimney-color: var(--house-color);
+    --chimney-width: 20px;
+    --chimney-height: 35px;
+  
+    /* window */
+    --window-width: 70px;
+    --window-height: 45px;
+    --window-color-inner: #ffe492;
+    --window-color-outer: #ffb84a;
+    --window-glow: #ffcb69;
+    --window-glow-size: 18px;
+    --window-top: 20px;
+  
+    /* door */
+    --door-width: 30px;
+    --door-height: 40px;
+    --door-color: #473c52;
+    --door-border-radius: 4px;
+  
+    /* smoke */
+    --smoke-color: rgba(255, 255, 255, 0.4);
+    --smoke-duration: 4s;
+  
+    /* canvas frame */
+    --frame-border-width: 16px;
+    --frame-border-color: #d7c09d;
+    --frame-bg: #fdf8ee;
+    --frame-border-radius: 10px;
+}
+  
+  /* sunset theme */
+  .sunset-theme {
+    --sky-color-top: #5a2f6b;
+    --sky-color-bottom: #ff6b35;
+  
+    --moon-color: #ffa577;
+    --moon-glow: #ff8c42;
+  
+    --star-color: #ffe4b5;
+    --star-opacity-min: 0.3;
+    --star-opacity-max: 0.7;
+    --star-twinkle-duration: 3s;
+  
+    --ground-color-top: #3d2817;
+    --ground-color-bottom: #1f1508;
+  
+    --house-color: #8b4513;
+    --roof-color: #5c2e0f;
+  
+    --window-color-inner: #fff8dc;
+    --window-color-outer: #ffd700;
+    --window-glow: #ffa500;
+    --window-glow-size: 22px;
+  
+    --door-color: #4a2511;
+    --smoke-color: rgba(255, 255, 255, 0.5);
+    --smoke-duration: 3.5s;
+  
+    --frame-border-color: #8b6f47;
+    --frame-bg: #fff5e6;
+  }
+  
+  /* winter theme */
+  .winter-theme {
+    --sky-color-top: #0d1b2a;
+    --sky-color-bottom: #1b3a52;
+  
+    --moon-color: #e8f4f8;
+    --moon-glow: #b8d4e8;
+  
+    --star-color: #ffffff;
+    --star-opacity-min: 0.6;
+    --star-opacity-max: 1;
+    --star-twinkle-duration: 2s;
+  
+    --ground-color-top: #d4e5f2;
+    --ground-color-bottom: #b3cde0;
+  
+    --snow-display: block;
+  
+    --house-color: #5a6b7d;
+    --roof-color: #374854;
+  
+    --window-color-inner: #ffedd8;
+    --window-color-outer: #ff9d3d;
+    --window-glow: #ffb366;
+    --window-glow-size: 20px;
+  
+    --door-color: #3d4f5c;
+    --smoke-color: rgba(255, 255, 255, 0.6);
+    --smoke-duration: 3s;
+  
+    --frame-border-color: #c0d6e4;
+    --frame-bg: #f0f8ff;
+  }
+  
+  /* theme controls */
+  .theme-controls {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  
+  .theme-btn {
+    padding: 12px 20px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    background: var(--btn-bg, white);
+    color: var(--btn-text, black);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all var(--transition-fast);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .theme-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  
+  .theme-btn.active {
+    background: #333;
+    color: white;
+  }
+  
+  /* using data attributes for theme colors */
+  .theme-btn[data-theme="default"] { border-color: #1e2959; }
+  .theme-btn[data-theme="default"].active { background: #1e2959; }
+  
+  .theme-btn[data-theme="sunset"] { border-color: #ff6b35; }
+  .theme-btn[data-theme="sunset"].active { background: #ff6b35; }
+  
+  .theme-btn[data-theme="winter"] { border-color: #bfc4c9; }
+  .theme-btn[data-theme="winter"].active { background: #bfc4c9; }
+  
+  /* base styles */
+  body {
     margin: 0;
     height: 100vh;
     display: flex;
@@ -12,21 +221,20 @@
   .canvas-frame {
     width: 550px;
     height: 350px;
-    border: 16px solid #d7c09d;
-    border-radius: 10px;
-    background: #fdf8ee;
+    border: var(--frame-border-width) solid var(--frame-border-color);
+    border-radius: var(--frame-border-radius);
+    background: var(--frame-bg);
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow:
-      0 6px 24px rgba(0,0,0,0.25),
-      inset 0 0 12px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25),
+                inset 0 0 12px rgba(0,0,0,0.2);
+    transition: transform var(--transition-fast),
+                border-color var(--transition-normal),
+                background var(--transition-normal);
   }
   
-  .canvas-frame:hover {
-    transform: scale(1.02);
-  }
+  .canvas-frame:hover { transform: scale(1.02); }
   
   /* night painting scene */
   .scene {
@@ -35,20 +243,31 @@
     height: 80%;
     overflow: hidden;
     border-radius: 8px;
-    background: linear-gradient(#0a0e27, #1e2959);
+    background: linear-gradient(
+        var(--sky-color-top, #0a0e27),
+        var(--sky-color-bottom, #1e2959)
+      );
+    animation: var(--sky-animation);
+    transition: background var(--transition-normal);
+  }
+  
+  .house, .roof, .window, .door, .chimney {
+    position: absolute;
+    transition: background var(--transition-normal);
   }
   
   /* moon */
   .moon {
     position: absolute;
-    top: 40px;
-    right: 60px;
-    width: 80px;
-    height: 80px;
-    background: #f6f3c1;
+    top: var(--moon-top);
+    right: var(--moon-right);
+    width: var(--moon-size);
+    height: var(--moon-size);
+    background: var(--moon-color);
     border-radius: 50%;
-    filter: drop-shadow(0 0 12px #f6f3c1);
+    box-shadow: 0 0 20px var(--moon-glow), 0 0 40px var(--moon-glow);
     z-index: 1;
+    transition: all var(--transition-normal);
   }
   
   /* stars */
@@ -56,24 +275,19 @@
     position: absolute;
     top: 30px;
     left: 50px;
-    width: 4px;
-    height: 4px;
-    background: white;
+    width: var(--star-size);
+    height: var(--star-size);
+    background: var(--star-color);
     border-radius: 50%;
     opacity: 0.85;
-    animation: twinkle 2.6s infinite ease-in-out alternate;
+    animation: twinkle var(--star-twinkle-duration) infinite ease-in-out alternate;
     box-shadow:
-      60px 15px white,
-      140px -18px white,
-      220px 25px white,
-      280px 5px white,
-      350px -12px white,
-      420px 18px white;
-  }
-  
-  @keyframes twinkle {
-    0% { opacity: 0.4; }
-    100% { opacity: 1; }
+      60px 15px var(--star-color),
+      140px -18px var(--star-color),
+      220px 25px var(--star-color),
+      280px 5px var(--star-color),
+      350px -12px var(--star-color),
+      420px 18px var(--star-color);
   }
   
   /* ground */
@@ -81,71 +295,93 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 100px;
-    background: linear-gradient(#1c2a38, #101a23);
-  }
+    height: var(--ground-height);
+    background: linear-gradient(
+        var(--ground-color-top, #1c2a38),
+        var(--ground-color-bottom, #101a23)
+    );
+    transition: all var(--transition-normal);
+}
   
   /* house */
   .house {
-    position: absolute;
-    bottom: 80px;
+    bottom: var(--house-bottom);
     left: 50%;
     transform: translateX(-50%);
-    width: 160px;
-    height: 110px;
-    background: #303760;
-    border-radius: 6px;
+    width: var(--house-width);
+    height: var(--house-height);
+    background: var(--house-color);
+    border-radius: var(--house-border-radius);
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
   }
   
   /* roof */
   .roof {
-    position: absolute;
-    top: -50px;
-    width: 160px;
-    height: 50px;
-    background: #222845;
+    top: calc(var(--roof-height) * -1);
+    width: var(--house-width);
+    height: var(--roof-height);
+    background: var(--roof-color);
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
   
   /* window glow */
   .window {
-    position: absolute;
-    top: 20px;
-    left: 45px;
-    width: 70px;
-    height: 45px;
+    top: var(--window-top);
+    left: calc((var(--house-width) - var(--window-width)) / 2);
+    width: var(--window-width);
+    height: var(--window-height);
     border-radius: 6px;
-    background: radial-gradient(circle, #ffe492, #ffb84a);
-    box-shadow: 0 0 18px #ffcb69;
-  }
-  
-  @keyframes flicker {
-    0% { opacity: 0.8; }
-    100% { opacity: 1; }
+    background: radial-gradient(circle, var(--window-color-inner), var(--window-color-outer));
+    box-shadow: 0 0 var(--window-glow-size) var(--window-glow);
   }
   
   /* door */
   .door {
-    position: absolute;
     bottom: 0;
-    left: 70px;
-    width: 30px;
-    height: 40px;
-    background: #473c52;
-    border-radius: 4px;
+    left: calc((var(--house-width) - var(--door-width)) / 2 + 10px);
+    width: var(--door-width);
+    height: var(--door-height);
+    background: var(--door-color);
+    border-radius: var(--door-border-radius);
   }
-
+  
   /* chimney */
   .chimney {
-    position: absolute;
-    top: -45px;
+    top: calc(var(--roof-height) * -1 + 5px);
     right: 30px;
-    width: 20px;
-    height: 35px;
-    background: #303760;
+    width: var(--chimney-width, 20px);
+    height: var(--chimney-height, 35px);
+    background: var(--chimney-color);
   }
-
+  
+  /* falling snow effect */
+  .scene::before,
+  .scene::after {
+    content: '';
+    position: absolute;
+    top: -200%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: var(--snow-display);
+    background-image:
+      radial-gradient(circle, white 1px, transparent 1px),
+      radial-gradient(circle, white 1px, transparent 1px),
+      radial-gradient(circle, white 0.5px, transparent 0.5px);
+    background-size: 70px 70px, 110px 110px, 55px 55px;
+    background-position: 0 0, 35px 45px, 55px 25px;
+    animation: snowfall 10s linear infinite;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  .scene::after {
+    animation-duration: 18s;
+    animation-delay: -7s;
+    opacity: 0.6;
+  }
+  
   /* smoke */
   .smoke {
     position: absolute;
@@ -153,35 +389,46 @@
     right: 35px;
     width: 8px;
     height: 8px;
-    background: rgba(255, 255, 255, 0.4);
+    background: var(--smoke-color);
     border-radius: 50%;
-    animation: smoke 4s infinite ease-out;
+    animation: smoke var(--smoke-duration) infinite ease-out;
   }
-
-  .smoke::before {
+  
+  .smoke::before,
+  .smoke::after {
     content: '';
     position: absolute;
+    background: var(--smoke-color);
+    border-radius: 50%;
+    animation: smoke var(--smoke-duration) infinite ease-out;
+  }
+  
+  .smoke::before {
     top: -8px;
     left: 2px;
     width: 10px;
     height: 10px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    animation: smoke 4s infinite ease-out 0.5s;
+    animation-delay: 0.5s;
   }
-
+  
   .smoke::after {
-    content: '';
-    position: absolute;
     top: -16px;
     left: -2px;
     width: 12px;
     height: 12px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    animation: smoke 4s infinite ease-out 1s;
+    animation-delay: 1s;
   }
-
+  
+  @keyframes twinkle {
+    0% { opacity: var(--star-opacity-min); }
+    100% { opacity: var(--star-opacity-max); }
+  }
+  
+  @keyframes snowfall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(300%); }
+  }
+  
   @keyframes smoke {
     0% {
       transform: translateY(0) translateX(0);
