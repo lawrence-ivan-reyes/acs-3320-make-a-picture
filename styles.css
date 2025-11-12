@@ -419,11 +419,6 @@ challenges encountered:
     animation-delay: 1s;
   }
   
-  @keyframes twinkle {
-    0% { opacity: var(--star-opacity-min); }
-    100% { opacity: var(--star-opacity-max); }
-  }
-  
   @keyframes snowfall {
     0% { transform: translateY(0); }
     100% { transform: translateY(300%); }
